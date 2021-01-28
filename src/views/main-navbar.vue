@@ -24,6 +24,17 @@
             </el-badge>
           </template>
         </el-menu-item>
+        <el-menu-item class="site-navbar__avatar" index="3">
+          <el-dropdown :show-timeout="0" placement="bottom">
+            <span class="el-dropdown-link">
+              {{ userName }}
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="updatePasswordHandle()">修改密码</el-dropdown-item>
+              <el-dropdown-item @click.native="logoutHandle()">退出</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </el-menu-item>
       </el-menu>
     </div>
     <!-- 弹窗, 修改密码 -->

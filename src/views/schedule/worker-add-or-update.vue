@@ -4,14 +4,8 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="员工ID" prop="userId">
-      <el-input v-model="dataForm.userId" placeholder="员工ID"></el-input>
-    </el-form-item>
-    <el-form-item label="日期" prop="date">
-      <el-input v-model="dataForm.date" placeholder="日期"></el-input>
-    </el-form-item>
-    <el-form-item label="状态" prop="status">
-      <el-input v-model="dataForm.status" placeholder="状态"></el-input>
+    <el-form-item label="" prop="name">
+      <el-input v-model="dataForm.name" placeholder=""></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -28,19 +22,11 @@
         visible: false,
         dataForm: {
           id: 0,
-          userId: '',
-          date: '',
-          status: ''
+          name: ''
         },
         dataRule: {
-          userId: [
-            { required: true, message: '员工ID不能为空', trigger: 'blur' }
-          ],
-          date: [
-            { required: true, message: '日期不能为空', trigger: 'blur' }
-          ],
-          status: [
-            { required: true, message: '状态不能为空', trigger: 'blur' }
+          name: [
+            { required: true, message: '不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -53,14 +39,12 @@
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/generator/scheduling/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/generator/worker/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.userId = data.scheduling.userId
-                this.dataForm.date = data.scheduling.date
-                this.dataForm.status = data.scheduling.status
+                this.dataForm.name = data.worker.name
               }
             })
           }
@@ -71,13 +55,11 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/generator/scheduling/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/generator/worker/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'userId': this.dataForm.userId,
-                'date': this.dataForm.date,
-                'status': this.dataForm.status
+                'name': this.dataForm.name
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
