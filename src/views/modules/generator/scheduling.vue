@@ -45,6 +45,13 @@
         header-align="center"
         align="center"
         label="状态">
+        <template slot-scope="scope">
+          <div slot="reference" class="name-wrapper" >
+            <el-tag size="success" v-if="scope.row.status === '白班'" >{{ scope.row.status }}</el-tag>
+            <el-tag size="warning" v-else-if="scope.row.status === '夜班'" >{{ scope.row.status }}</el-tag>
+            <el-tag size="info" v-else="scope.row.status === '休息'" >{{ scope.row.status }}</el-tag>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column
         fixed="right"
