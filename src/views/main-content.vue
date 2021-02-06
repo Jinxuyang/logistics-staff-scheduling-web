@@ -8,7 +8,7 @@
       @tab-click="selectedTabHandle"
       @tab-remove="removeTabHandle">
       <el-dropdown class="site-tabs__tools" :show-timeout="0">
-        <i class="el-icon-arrow-down el-icon--right"></i>
+        <i class="el-icon-arrow-down el-icon- -right"></i>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="tabsCloseCurrentHandle">关闭当前标签页</el-dropdown-item>
           <el-dropdown-item @click.native="tabsCloseOtherHandle">关闭其它标签页</el-dropdown-item>
