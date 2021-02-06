@@ -1,17 +1,19 @@
 <template>
-  <div class="mod-demo-echarts">
-    <el-row :gutter="20">
+  <div >
+<!--    <el-row :gutter="20">
       <el-col :span="24">
         <el-card>
           <div id="J_chartLineBox" class="chart-box"></div>
         </el-card>
       </el-col>
-<!--      <el-col :span="24">
+&lt;!&ndash;      <el-col :span="24">
         <el-card>
           <div id="J_chartPieBox" class="chart-box"></div>
         </el-card>
-      </el-col>-->
-    </el-row>
+      </el-col>&ndash;&gt;
+    </el-row>-->
+    <el-calendar v-model="value">
+    </el-calendar>
   </div>
 </template>
 
@@ -21,7 +23,8 @@ export default {
   data () {
     return {
       chartLine: null,
-      chartPie: null
+      chartPie: null,
+      value: new Date()
     }
   },
   mounted () {
