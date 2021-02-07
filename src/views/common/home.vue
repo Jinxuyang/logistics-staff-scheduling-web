@@ -12,8 +12,7 @@
         </el-card>
       </el-col>&ndash;&gt;
     </el-row>-->
-    <el-calendar v-model="value">
-    </el-calendar>
+    <h1>欢迎使用</h1>
   </div>
 </template>
 
