@@ -5,6 +5,19 @@
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
+        <el-select v-model="dataForm.category" placeholder="组别">
+          <!--          <el-option label="全部" value="全部"></el-option>-->
+          <el-option label="收货组" value="收货组"></el-option>
+          <el-option label="补货组" value="补货组"></el-option>
+          <el-option label="拣货组" value="拣货组"></el-option>
+          <el-option label="分拣组" value="分拣组"></el-option>
+          <el-option label="复核组" value="复核组"></el-option>
+          <el-option label="包装组" value="包装组"></el-option>
+          <el-option label="订单组" value="订单组"></el-option>
+          <el-option label="物流组" value="物流组"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button v-if="isAuth('generator:scheduling:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button v-if="isAuth('generator:scheduling:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
@@ -23,45 +36,34 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="id"
+        prop="userId"
         header-align="center"
         align="center"
-        label="ID">
+        label="ID"
+        width="70">
       </el-table-column>
       <el-table-column
-        prop="userId"
+        prop="username"
         header-align="center"
         align="center"
         label="员工ID">
       </el-table-column>
       <el-table-column
-        prop="date"
+        prop="category"
         header-align="center"
         align="center"
-        label="日期">
+        label="员工ID">
       </el-table-column>
       <el-table-column
-        prop="status"
         header-align="center"
         align="center"
-        label="状态">
+        label="排班情况">
         <template slot-scope="scope">
-          <div slot="reference" class="name-wrapper" >
-            <el-tag size="success" v-if="scope.row.status === '白班'" >{{ scope.row.status }}</el-tag>
-            <el-tag size="warning" v-else-if="scope.row.status === '夜班'" >{{ scope.row.status }}</el-tag>
-            <el-tag size="info" v-else="scope.row.status === '休息'" >{{ scope.row.status }}</el-tag>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        header-align="center"
-        align="center"
-        width="150"
-        label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button
+            size="mini"
+            @click="getSchedule(scope.row.username)">
+            点击查看排班情况
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -76,6 +78,27 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+
+    <div>
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible">
+        <el-calendar>
+          <template
+            slot="dateCell"
+            slot-scope="{date, data}">
+            <p :class="data.isSelected ? 'is-selected' : ''">
+              {{ data.day.split('-')[2]}}
+            </p>
+            <p v-for="(info ,index) in formatSchedule(data)" :key="index">
+              <el-tag size="success" v-if="info.status === '白班'" >{{ info.status }}</el-tag>
+              <el-tag size="warning" v-else-if="info.status === '夜班'" >{{ info.status }}</el-tag>
+              <el-tag size="info" v-else >{{ info.status }}</el-tag>
+            </p>
+          </template>
+        </el-calendar>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -85,7 +108,8 @@
     data () {
       return {
         dataForm: {
-          key: ''
+          key: '',
+          category: '拣货组'
         },
         dataList: [],
         pageIndex: 1,
@@ -93,7 +117,9 @@
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
-        addOrUpdateVisible: false
+        addOrUpdateVisible: false,
+        dialogVisible: false,
+        schedule:''
       }
     },
     components: {
@@ -102,16 +128,26 @@
     activated () {
       this.getDataList()
     },
+    computed: {
+      formatSchedule() {
+        return data => {
+          return this.schedule.filter(ele => {
+            return ele.date == data.day.split('-')[2];
+          })
+        }
+      }
+    },
     methods: {
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/generator/scheduling/list'),
+          url: this.$http.adornUrl('/sys/user/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
+            'category': this.dataForm.category,
             'key': this.dataForm.key
           })
         }).then(({data}) => {
@@ -176,7 +212,21 @@
             }
           })
         })
-      }
+      },
+      async getSchedule(username){
+        this.dialogVisible = true
+        console.log(username)
+        this.$http({
+          url: this.$http.adornUrl("/generator/scheduling/listByUsername"),
+          method: 'get',
+          params: this.$http.adornParams({
+            'username': username
+          })
+        }).then(({data}) => {
+          this.schedule = data.data
+          console.log(this.schedule)
+        })
+      },
     }
   }
 </script>
