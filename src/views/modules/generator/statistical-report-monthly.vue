@@ -2,11 +2,17 @@
   <div class="Echarts">
     <el-tabs tab-position="left" >
       <el-tab-pane label="员工班次情况">
-        <div id="main" style="width: 1000px;height: 600px;"></div>
+        <div id="radarChart" style="width: 1000px;height: 600px;"></div>
         <p style="text-align: center">从图中可以看出整体的28天出勤员工班次数量极值差是较小的，200名员工班次数量均在16-22范围之间</p>
       </el-tab-pane>
-      <el-tab-pane label="白夜班出勤人数分析">配置管理</el-tab-pane>
-      <el-tab-pane label="日均业务量处理能力">角色管理</el-tab-pane>
+      <el-tab-pane label="白夜班出勤人数分析">
+        <div id="barChart" style="width: 1000px;height: 600px;"></div>
+        <p style="text-align: center">从图中可以明显得知白夜班人数安排比例基本为1:1，较为符合当代大多数仓库实际员工安排。另外表中周末业务量小从而所需人员少，最大化利用人力资源，提高员工的标准劳务能力。</p>
+      </el-tab-pane>
+      <el-tab-pane label="日均业务量处理能力">
+        <div id="lineChart" style="width: 1000px;height: 600px;"></div>
+        <p style="text-align: center">从折线图-改进数据可以看出6月前24天数据波动很小，6月25日至28日这几天由于业务量极度下降，故波动较为明显，但整体来说改进后的日均业务量处理能力较为平稳，其效果较原始数据相比是优化的。</p>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -16,9 +22,9 @@ import * as echarts from 'echarts'
 export default {
   name: "echarts",
   methods:{
-    myEcharts(){
-      var myChart = echarts.init(document.getElementById('main'));
-      var option = {
+    radarChart(){
+      let myChart = echarts.init(document.getElementById('radarChart'));
+      let option = {
         title: {
           text: '员工班次情况'
         },
@@ -47,12 +53,219 @@ export default {
         }]
       };
 
-      // 使用刚指定的配置项和数据显示图表。
       myChart.setOption(option);
+    },
+    lineChart(){
+      let myChart = echarts.init(document.getElementById('lineChart'));
+      let option = {
+        title: {
+          text: '2020年6月日均业务处理能力表'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['改进前', '改进后']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            name: '改进前',
+            type: 'line',
+            data: [61.23478676,65.57638776,56.72117763,42.63427879,63.32653741,35.25394167,50.41235165,54.14173881,53.35162162,63.08928387,53.91289506,57.2364557,46.74872358,53.14134444,38.5943209,40.08783333,63.98813475,48.1204058,52.81879699,51.7160885,46.51948315,71.38629771,50.75791667,63.25765926,15.57344944,38.79045455,28.76517568,30.42655372]
+          },
+          {
+            name: '改进后',
+            type: 'line',
+            data: [50.78006707,51.27515426,50.41882456,50.24754286,51.71667222,49.77027059,48.80344681,50.38189583,49.97493671,52.01510106,51.37581765,51.67634286,51.80263964,50.88001064,45.36525439,49.57426718,50.68723034,47.43297143,48.11575342,48.29684298,44.51864516,49.47939153,49.72204082,50.83204762,19.52164789,32.82269231,24.75143023,29.452904]
+          }
+        ]
+      };
+      myChart.setOption(option);
+    },
+    barChart(){
+      let myChart = echarts.init(document.getElementById('barChart'));
+      let app = {}
+      let posList = [
+        'left', 'right', 'top', 'bottom',
+        'inside',
+        'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
+        'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
+      ];
+
+      app.configParameters = {
+        rotate: {
+          min: -90,
+          max: 90
+        },
+        align: {
+          options: {
+            left: 'left',
+            center: 'center',
+            right: 'right'
+          }
+        },
+        verticalAlign: {
+          options: {
+            top: 'top',
+            middle: 'middle',
+            bottom: 'bottom'
+          }
+        },
+        position: {
+          options: posList.reduce(function (map, pos) {
+            map[pos] = pos;
+            return map;
+          }, {})
+        },
+        distance: {
+          min: 0,
+          max: 100
+        }
+      };
+
+      app.config = {
+        rotate: 90,
+        align: 'left',
+        verticalAlign: 'middle',
+        position: 'insideBottom',
+        distance: 15,
+        onChange: function () {
+          var labelOption = {
+            normal: {
+              rotate: app.config.rotate,
+              align: app.config.align,
+              verticalAlign: app.config.verticalAlign,
+              position: app.config.position,
+              distance: app.config.distance
+            }
+          };
+          myChart.setOption({
+            series: [{
+              label: labelOption
+            }, {
+              label: labelOption
+            }, {
+              label: labelOption
+            }, {
+              label: labelOption
+            }]
+          });
+        }
+      };
+
+
+      let labelOption = {
+        show: true,
+        position: app.config.position,
+        distance: app.config.distance,
+        align: app.config.align,
+        verticalAlign: app.config.verticalAlign,
+        rotate: app.config.rotate,
+        formatter: '{c}  {name|{a}}',
+        fontSize: 16,
+        rich: {
+          name: {
+          }
+        }
+      };
+
+      let option = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        legend: {
+          data: ['业务量', '出勤人数', '白班人数', '夜班人数']
+        },
+        toolbox: {
+          show: true,
+          orient: 'vertical',
+          left: 'right',
+          top: 'center',
+          feature: {
+            mark: {show: true},
+            dataView: {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
+        },
+        xAxis: [
+          {
+            type: 'category',
+            axisTick: {show: false},
+            data: ["2020/6/1","2020/6/2","2020/6/3","2020/6/4","2020/6/5","2020/6/6","2020/6/7","2020/6/8","2020/6/9","2020/6/10","2020/6/11","2020/6/12","2020/6/13","2020/6/14","2020/6/15","2020/6/16","2020/6/17","2020/6/18","2020/6/19","2020/6/20","2020/6/21","2020/6/22","2020/6/23","2020/6/24","2020/6/25","2020/6/26","2020/6/27","2020/6/28"]
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '业务量',
+            type: 'bar',
+            barGap: 0,
+            emphasis: {
+              focus: 'series'
+            },
+            data: [8327.931,9639.729,8621.619,7034.656,9309.001,4230.473,4587.524,7254.993,7896.04,9778.839,8733.889,9043.36,5750.093,4782.721,5171.639,6494.229,9022.327,6640.616,7024.9,5843.918,4140.234,9351.605,7309.14,8539.784,1386.037,2986.865,2128.623,3681.613]
+          },
+          {
+            name: '出勤人数',
+            type: 'bar',
+            emphasis: {
+              focus: 'series'
+            },
+            data: [164,188,171,140,180,85,94,144,158,188,170,175,111,94,114,131,178,140,146,121,93,189,147,168,71,91,86,125]
+          },
+          {
+            name: '白班人数',
+            type: 'bar',
+            emphasis: {
+              focus: 'series'
+            },
+            data: [82,93,86,70,90,42,48,72,79,94,84,87,55,47,72,79,94,84,87,55,47,96,72,84,36,48,43,63]
+          },
+          {
+            name: '夜班人数',
+            type: 'bar',
+            emphasis: {
+              focus: 'series'
+            },
+            data: [82,95,85,70,90,43,46,72,79,94,86,88,56,47,72,79,94,86,88,56,47,93,75,84,35,43,43,62]
+          }
+        ]
+      }
+      myChart.setOption(option)
     }
   },
   mounted() {
-    this.myEcharts()
+    this.radarChart();
+    this.lineChart();
+    this.barChart()
   }
 }
 </script>
