@@ -148,7 +148,6 @@
             'page': this.pageIndex,
             'limit': this.pageSize,
             'category': this.dataForm.category,
-            'key': this.dataForm.key
           })
         }).then(({data}) => {
           if (data && data.code === 0) {

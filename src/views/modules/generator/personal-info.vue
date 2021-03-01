@@ -13,7 +13,7 @@
           <el-table :data="usersInfo">
             <el-table-column width="100" property="username" label="姓名"></el-table-column>
             <el-table-column width="100" property="mobile" label="电话"></el-table-column>
-            <el-table-column width="100" property="email" label="邮箱"></el-table-column>
+            <el-table-column width="100" property="category" label="组别"></el-table-column>
           </el-table>
           <div slot="reference" v-on:click="getSameStatusUsers(data.day.split('-')[2])">
             <p v-for="(info ,index) in formatSchedule(data)" :key="index">
@@ -50,7 +50,7 @@ export default {
         this.user_id = reg.exec(this.personalInfo.username)[1]
       })
       this.$http({
-        url: this.$http.adornUrl("/generator/scheduling/listByUserID/"+this.user_id),
+        url: this.$http.adornUrl("/generator/scheduling/listByUsername?username="+this.personalInfo.username),
         method: 'get',
       }).then(({data}) => {
         this.schedule = data.data
@@ -63,7 +63,7 @@ export default {
         url: this.$http.adornUrl("/generator/scheduling/listSameStatusUsers"),
         method: 'get',
         params: this.$http.adornParams({
-          userId: this.personalInfo.userId,
+          username: this.personalInfo.username,
           day: day
         })
       }).then(({data}) => {
