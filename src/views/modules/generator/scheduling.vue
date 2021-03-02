@@ -4,9 +4,9 @@
       <el-form-item>
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
       </el-form-item>
-      <el-form-item>
+<!--      <el-form-item>
         <el-select v-model="dataForm.category" placeholder="组别">
-          <!--          <el-option label="全部" value="全部"></el-option>-->
+          &lt;!&ndash;          <el-option label="全部" value="全部"></el-option>&ndash;&gt;
           <el-option label="收货组" value="收货组"></el-option>
           <el-option label="补货组" value="补货组"></el-option>
           <el-option label="拣货组" value="拣货组"></el-option>
@@ -16,7 +16,7 @@
           <el-option label="订单组" value="订单组"></el-option>
           <el-option label="物流组" value="物流组"></el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button v-if="isAuth('generator:scheduling:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
@@ -48,12 +48,12 @@
         align="center"
         label="员工ID">
       </el-table-column>
-      <el-table-column
+<!--      <el-table-column
         prop="category"
         header-align="center"
         align="center"
         label="员工ID">
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column
         header-align="center"
         align="center"
@@ -109,7 +109,7 @@
       return {
         dataForm: {
           key: '',
-          category: '拣货组'
+          category: ''
         },
         dataList: [],
         pageIndex: 1,
